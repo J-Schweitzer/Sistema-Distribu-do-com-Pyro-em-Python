@@ -2,10 +2,6 @@ import threading
 import time
 from Pyro5.api import expose, Daemon, Proxy, locate_ns
 
-import os
-os.environ["PYRO_NS_HOST"] = "192.168.15.5"
-ns = locate_ns()
-
 @expose
 class ClientCallback:
     """
@@ -92,8 +88,10 @@ def start_client(name):
     """
     Configuração e inicialização do cliente Pyro5.
     """
+    
+    ns = locate_ns(host = "192.168.15.3")
+
     # 1. Conexão ao Servidor de Nomes (Name Server)
-    ns = locate_ns()
     # 2. Localização do Servidor de Chat
     server_uri = ns.lookup("chat.server")
     # 3. Criação de um Proxy para o Objeto Remoto do Servidor
@@ -109,7 +107,7 @@ def start_client(name):
             print(f"\n[{ts}] {msg['from']} -> {msg['to']}: {msg['text']}\n> ", end="", flush=True)
 
     # Criação do Daemon Local para receber Callbacks
-    with Daemon(host="192.168.15.3") as daemon:
+    with Daemon(host="192.168.15.6") as daemon:
         # 1. Cria a instância do objeto callback com a função 'on_receive'.
         callback = ClientCallback(on_receive)
         # 2. Registra o objeto callback no Daemon local, obtendo sua URI.
