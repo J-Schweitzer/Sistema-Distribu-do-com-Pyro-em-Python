@@ -1,0 +1,26 @@
+import socket
+
+def mostrar_meu_ip():
+    """Tenta obter o endereço IP da máquina na rede."""
+    try:
+        # Cria um socket de conexão (não se conecta a nada)
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        
+        # Conecta a um endereço de rede genérico e inatingível (como o DNS do Google).
+        # Isso não envia dados, apenas força o sistema a determinar qual interface de rede
+        # deve ser usada e qual é o IP de origem dessa interface.
+        s.connect(("8.8.8.8", 80))
+        
+        # Obtém o endereço IP local do socket após a 'conexão'
+        ip_address = s.getsockname()[0]
+        
+        # Fecha o socket
+        s.close()
+        
+        print(f"Seu Endereço IP na Rede Local é: **{ip_address}**")
+        
+    except Exception as e:
+        print(f"Não foi possível determinar o IP. Verifique sua conexão. Erro: {e}")
+
+if __name__ == "__main__":
+    mostrar_meu_ip()
